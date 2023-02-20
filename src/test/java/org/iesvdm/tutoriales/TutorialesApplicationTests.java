@@ -1,17 +1,21 @@
 package org.iesvdm.tutoriales;
 
-import org.iesvdm.tutoriales.domain.Socio;
-import org.iesvdm.tutoriales.domain.Tarjeta;
-import org.iesvdm.tutoriales.domain.Tutorial;
-import org.iesvdm.tutoriales.domain.Comment;
+import jakarta.transaction.Transactional;
+import org.iesvdm.tutoriales.domain.*;
+import org.iesvdm.tutoriales.repository.PersonRepository;
 import org.iesvdm.tutoriales.repository.SocioRepository;
 import org.iesvdm.tutoriales.repository.TutorialRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+
+import static org.assertj.core.api.FactoryBasedNavigableListAssert.assertThat;
+
 
 @SpringBootTest
 class TutorialesApplicationTests {
@@ -20,6 +24,8 @@ class TutorialesApplicationTests {
 
     @Autowired
     SocioRepository socioRepository;
+    @Autowired
+    PersonRepository personRepository;
 
     @Test
     void testTutorialRepository(){
@@ -87,6 +93,37 @@ class TutorialesApplicationTests {
             System.out.println(socio12.toString());
         }
         socioRepository.delete(socio);
+    }
+
+
+    @Test
+    @Commit
+    @Transactional
+    public void personElementCollectionStringAndAddressEmbeddable(){
+        Person person = Person.builder().name("Pablo Marmol")
+                .phoneNumbers(new HashSet<>())
+                .addresses(new HashSet<>())
+                .build();
+
+
+        Address address1 = Address.builder().street("Portugal")
+                .city("Malaga").zipCode(29403).build();
+
+        Address address2 = Address.builder().street("Francia").city("Malaga")
+                .zipCode(29043).build();
+
+
+        person.getAddresses().add(address1);
+        person.getAddresses().add(address2);
+        person.getPhoneNumbers().add("952132439");
+        person.getPhoneNumbers().add("955461238");
+        personRepository.save(person);
+
+        Person personSaved = personRepository.findById(person.getId()).get();
+        System.out.println(personSaved.toString());
+        System.out.println(person.toString());
+      //  assertThat(person.getAddresses(),personSaved.getAddresses()).hasSize(2);
+        //assertThat(personSaved.getPhoneNumbers()).hasSize(2);
     }
 
 
