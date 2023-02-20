@@ -102,9 +102,11 @@ class TutorialesApplicationTests {
     public void personElementCollectionStringAndAddressEmbeddable(){
         Person person = Person.builder().name("Pablo Marmol")
                 .phoneNumbers(new HashSet<>())
-                .addresses(new HashSet<>())
+                .secondaryAddresses(new HashSet<>())
                 .build();
 
+        Address mainAddress = Address.builder().street("Belgica")
+                .city("Malaga").zipCode(29402).build();
 
         Address address1 = Address.builder().street("Portugal")
                 .city("Malaga").zipCode(29403).build();
@@ -112,9 +114,9 @@ class TutorialesApplicationTests {
         Address address2 = Address.builder().street("Francia").city("Malaga")
                 .zipCode(29043).build();
 
-
-        person.getAddresses().add(address1);
-        person.getAddresses().add(address2);
+        person.setMainAddress(mainAddress);
+        person.getSecondaryAddresses().add(address1);
+        person.getSecondaryAddresses().add(address2);
         person.getPhoneNumbers().add("952132439");
         person.getPhoneNumbers().add("955461238");
         personRepository.save(person);

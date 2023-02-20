@@ -16,6 +16,7 @@ public class Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "person_id")
     private long id;
 
     private String name;
@@ -28,12 +29,17 @@ public class Person {
             @AttributeOverride(name = "city", column = @Column(name="city")),
             @AttributeOverride(name="zipCode", column = @Column(name = "zip_code"))
     })
-    private Set<Address> addresses = new HashSet<>();
+    private Set<Address> secondaryAddresses = new HashSet<>();
+    @Embedded
+    private Address mainAddress;
+
 
     @ElementCollection
     @CollectionTable(name = "person_phone_number", joinColumns = @JoinColumn(name = "person_id"))
     @Column(name= "phone_number")
     private Set<String> phoneNumbers;
+
+
 
 
 }
